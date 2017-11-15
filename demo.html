@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>智能机器人</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 12px;
+            font-family: "微软雅黑";
+            background: url(img/bg.jpg) no-repeat;
+            width: 100%;
+            height: 100vh;
+            background-size: cover;
+        }
+
+        #top {
+            width: 100%;
+            height: 60px;
+            background: rgba(15, 25, 50, 0.3);
+            color: #fff;
+            line-height: 60px;
+            text-align: center;
+            font-size: 30px;
+        }
+        /* end public */
+
+        #box {
+            width: 800px;
+            height: 600px;
+            background: rgba(255, 255, 255, .5);
+            margin: 100px auto 0;
+        }
+        /* head start */
+
+        .b-head {
+            width: 100%;
+            height: 60px;
+            background-color: #4CAF50;
+        }
+
+        .h-img {
+            margin: 0 20px;
+            float: left;
+            user-select: none;
+        }
+
+        .h_span {
+            color: #fff;
+            font-size: 18px;
+            line-height: 60px;
+            float: left;
+            user-select: none;
+            cursor: default;
+        }
+        /* end head */
+        /* body start */
+
+        .b-body {
+            width: 100%;
+            height: 420px;
+            overflow: auto;
+            margin: 20px 0;
+        }
+
+        .rotWord,.mWord{
+            width: 100%;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .rotWord span {
+            background: url(img/rot.png);
+            height: 40px;
+            width: 40px;
+            margin-left: 20px;
+            float: left;
+        }
+
+        .rotWord p {
+            word-break: break-all;
+            top: 4px;
+            float: left;
+            color: #fff;
+            font-size: 14px;
+            margin-left: 10px;
+            padding: 10px;
+            line-height: 24px;
+            background: rgba(0, 0, 255, .5);
+            border-radius: 6px;
+            max-width: 220px;
+        }
+
+        .mWord span {
+            background: url(img/my.png);
+            height: 40px;
+            width: 40px;
+            float: right;
+            margin-right: 20px;
+        }
+
+        .mWord p {
+            word-break: break-all;
+            /*自动换行*/
+            top: 2px;
+            float: right;
+            color: #fff;
+            font-size: 14px;
+            margin-right: 10px;
+            padding: 10px;
+            line-height: 24px;
+            background: #19b955;
+            border-radius: 6px;
+            max-width: 220px;
+        }
+        /* end body */
+        /* footer start */
+
+        .b-footer {
+            width: 760px;
+            height: 60px;
+            margin: 0 20px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        #f-left {
+            padding-left: 20px;
+            outline: none;
+            overflow: hidden;
+            width: 620px;
+            height: 60px;
+            float: left;
+            background: rgba(0, 0, 0, .1);
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #btn {
+            width: 100px;
+            height: 60px;
+            background: #666666;
+            float: right;
+            cursor: pointer;
+            text-align: center;
+            line-height: 60px;
+            font-size: 18px;
+            color: #fff;
+            user-select: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body id="body">
+<div id="top">Web开发人工智能机器人</div>
+<div id="box">
+    <!-- head start -->
+    <div class="b-head">
+        <img  class="h-img" alt="" src="img/logo.png" width=80; height=60;/>
+        <span class="h_span">人工智能机器人</span>
+    </div>
+    <!-- end head -->
+    <!-- body start -->
+    <div class="b-body">
+        <div class="rotWord">
+            <span></span>
+            <p>
+                嗨，最近想我没有？
+            </p>
+        </div>
+    </div>
+    <!-- end body -->
+    <!-- footer start -->
+    <div class="b-footer">
+        <input type="text" name="text" id="f-left" />
+        <div id="btn">发送</div>
+    </div>
+    <!-- end footer -->
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    var text = g('#f-left')
+    text.focus();
+    function action(){
+        if(text.value == null || text.value == ''){
+            text.focus();
+            return;
+        }
+        var mWord = "<div class='mWord'><span></span><p>"+text.value+"</p></div>";
+        g('.b-body')[0].innerHTML += mWord;
+        g('.b-body')[0].scrollTop = 10000000;
+        new Post({
+            url:'http://www.tuling123.com/openapi/api',
+            data:{
+                "key":"836bef28d47643f2b5b4a1b9e310987a",
+                "info":text.value
+            },
+            success:function(res){
+                console.log(typeof(res))
+                var data = JSON.parse(res); //将字符串解析成对象
+//                var data =  eval('(' + res + ')'); //将字符串解析成对象
+                var rotWord = "<div class='rotWord'><span></span><p>"+data.text+"</p></div>";
+                g('.b-body')[0].innerHTML += rotWord;
+                g('.b-body')[0].scrollTop = 10000000;
+            }
+        })
+        text.value = '';
+        text.focus();
+
+    }
+	g('#btn').onclick = function(){
+        action();
+    }
+    document.onkeydown = function(e){
+        if ( e.keyCode == 13 )
+        {
+            action();
+        }
+    };
+
+
+    function g(selector){
+	    return selector.substring(0,1) == '.'?document.getElementsByClassName(selector.substring(1)):document.getElementById(selector.substring(1))
+    }
+
+
+
+    function Post(opt) {
+        this.init(opt);
+    }
+    Post.prototype = {
+        constructor: 'Post',
+        init: function (opt) {
+            this.method = 'POST';
+            this.url = opt.url || '';
+            this.async = true;
+            this.data = opt.data || null;
+            this.success = opt.success || function () {}
+            this.format();
+        },
+        format: function () {
+            var data = this.data;
+            var params = [];
+            for (var key in data) {
+                params.push(key + '=' + data[key]);
+            }
+            this.postData = params.join('&');
+            this.xhr();
+        },
+        xhr: function () {
+            var that = this;
+            var xhr = new XMLHttpRequest();
+            xhr.open(this.method, this.url, this.async);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8');
+            /*    xhr.setRequestHeader("Content-Length", this.data.URL.length);
+             console.log(this.data.URL.length);*/
+            xhr.send(this.postData);
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState === 4) {
+                    that.success(xhr.response);
+                }
+            }
+        }
+    }
+</script>
